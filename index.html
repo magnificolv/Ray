@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ray Kurzweil — AGI 2029, Singularity 2045 · Magnifico Deep Dives</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: rgba(255,255,255,0.03);
+    --surface-hover: rgba(255,255,255,0.06);
+    --border: rgba(255,255,255,0.08);
+    --text: #e4e4e7;
+    --text-muted: #a1a1aa;
+    --accent-1: #f59e0b;  /* amber/gold — Kurzweil */
+    --accent-2: #ea580c;  /* deep orange */
+    --accent-3: #8b5cf6;  /* violet — singularity */
+    --accent-4: #10b981;  /* emerald — predictions */
+    --accent-5: #3b82f6;  /* blue — economics */
+    --accent-6: #ec4899;  /* pink — consciousness */
+    --glow-1: rgba(245,158,11,0.12);
+    --glow-2: rgba(234,88,12,0.08);
+    --glow-3: rgba(139,92,246,0.10);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  .particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  .particle {
+    position: absolute; border-radius: 50%;
+    filter: blur(80px); opacity: 0.35;
+    animation: float 20s infinite ease-in-out;
+  }
+  .particle:nth-child(1) {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(245,158,11,0.10), transparent);
+    top: -10%; left: -10%; animation-delay: 0s; animation-duration: 22s;
+  }
+  .particle:nth-child(2) {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(139,92,246,0.08), transparent);
+    top: 50%; right: -15%; animation-delay: -8s; animation-duration: 25s;
+  }
+  .particle:nth-child(3) {
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, rgba(234,88,12,0.07), transparent);
+    top: 80%; left: 30%; animation-delay: -15s; animation-duration: 20s;
+  }
+  .particle:nth-child(4) {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(236,72,153,0.06), transparent);
+    top: 20%; left: 60%; animation-delay: -5s; animation-duration: 28s;
+  }
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(60px, -30px) scale(1.12); }
+    50% { transform: translate(-40px, 50px) scale(0.92); }
+    75% { transform: translate(-50px, -20px) scale(1.08); }
+  }
+  .nav-dots {
+    position: fixed; right: 16px; top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 10px; z-index: 100;
+  }
+  .nav-dots a {
+    display: block; width: 10px; height: 10px;
+    border-radius: 50%; background: rgba(255,255,255,0.2);
+    transition: all 0.3s ease;
+  }
+  .nav-dots a:hover, .nav-dots a.active {
+    background: var(--accent-1);
+    box-shadow: 0 0 12px var(--accent-1);
+    transform: scale(1.3);
+  }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding: 4rem 2rem;
+    position: relative; z-index: 1;
+    max-width: 960px; margin: 0 auto;
+  }
+  .slide-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem; color: var(--accent-1);
+    letter-spacing: 0.15em; text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .hero { text-align: center; align-items: center; }
+  .hero h1 {
+    font-size: clamp(1.8rem, 5vw, 3.2rem);
+    font-weight: 900; line-height: 1.1;
+    letter-spacing: -0.03em; margin-bottom: 1rem;
+  }
+  .hero h1 .gradient-text {
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero .subtitle {
+    font-size: 1.1rem; color: var(--text-muted);
+    max-width: 650px; margin: 0 auto 2rem;
+  }
+  .hero .meta {
+    display: flex; gap: 2rem; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem; color: var(--text-muted);
+    flex-wrap: wrap;
+  }
+  .hero .meta span { display: flex; align-items: center; gap: 0.4rem; }
+  .hero .meta .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .dot-amber { background: var(--accent-1); }
+  .dot-violet { background: var(--accent-3); }
+  .dot-green { background: var(--accent-4); }
+
+  .panel-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.25);
+    border-radius: 50px; padding: 0.35rem 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem; color: var(--accent-1);
+    margin-bottom: 1.5rem;
+  }
+
+  .card-grid { display: grid; gap: 1rem; margin: 1.5rem 0; }
+  .card-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+  .card-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .card-grid.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .card, .highlight-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.5rem;
+    transition: all 0.3s ease;
+  }
+  .card:hover, .highlight-card:hover {
+    background: var(--surface-hover);
+    border-color: rgba(255,255,255,0.15);
+    transform: translateY(-2px);
+  }
+  .highlight-card {
+    border-left: 3px solid var(--accent-1);
+    background: rgba(245,158,11,0.04);
+  }
+  .highlight-card.purple  { border-left-color: var(--accent-3); background: rgba(139,92,246,0.04); }
+  .highlight-card.emerald { border-left-color: var(--accent-4); background: rgba(16,185,129,0.04); }
+  .highlight-card.blue    { border-left-color: var(--accent-5); background: rgba(59,130,246,0.04); }
+  .highlight-card.pink    { border-left-color: var(--accent-6); background: rgba(236,72,153,0.04); }
+  .highlight-card.orange  { border-left-color: var(--accent-2); background: rgba(234,88,12,0.04); }
+  .card h3, .highlight-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.35rem; }
+  .card p, .highlight-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.55; }
+
+  .spec-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin: 0.75rem 0; }
+  .spec-chip {
+    display: flex; align-items: center; gap: 0.35rem;
+    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.35rem 0.7rem;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+  }
+  .spec-chip .val { color: var(--accent-1); font-weight: 600; }
+
+  .bench-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.75rem 0; }
+  .bench-stat {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.5rem 0.75rem;
+    text-align: center; min-width: 65px;
+  }
+  .bench-stat .val {
+    font-size: 1.05rem; font-weight: 700;
+    color: var(--accent-1); line-height: 1;
+  }
+  .bench-stat .lbl {
+    font-size: 0.58rem; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.05em;
+    margin-top: 0.2rem;
+  }
+
+  .tier-badge {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    padding: 0.2rem 0.6rem; border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem; font-weight: 700;
+  }
+  .tier-s { background: rgba(245,158,11,0.18); color: var(--accent-1); }
+  .tier-a { background: rgba(16,185,129,0.18); color: var(--accent-4); }
+  .tier-b { background: rgba(139,92,246,0.18); color: var(--accent-3); }
+
+  .callout {
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 1rem 1.25rem; margin: 1rem 0;
+    display: flex; gap: 0.75rem; align-items: flex-start;
+    font-size: 0.85rem;
+  }
+  .callout.good { border-left: 3px solid var(--accent-4); background: rgba(16,185,129,0.06); }
+  .callout.info { border-left: 3px solid var(--accent-1); background: rgba(245,158,11,0.06); }
+  .callout.warn { border-left: 3px solid var(--accent-3); background: rgba(139,92,246,0.06); }
+  .callout .ci { font-size: 1.2rem; flex-shrink: 0; }
+
+  .pullquote {
+    border-left: 3px solid var(--accent-1); padding: 0.75rem 1.25rem;
+    margin: 1rem 0; font-style: italic;
+    font-size: 0.9rem; color: var(--text-muted);
+    background: rgba(245,158,11,0.04);
+    border-radius: 0 8px 8px 0;
+  }
+  .pullquote .author {
+    display: block; margin-top: 0.4rem;
+    font-style: normal; font-size: 0.72rem;
+    color: var(--accent-1); font-weight: 600;
+  }
+
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 0.5rem; margin: 0.75rem 0; }
+  .stat-grid .stat {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    border-radius: 10px; padding: 0.7rem 0.5rem; text-align: center;
+  }
+  .stat-grid .stat .big {
+    font-size: 1.5rem; font-weight: 900; line-height: 1;
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .stat-grid .stat .lbl {
+    font-size: 0.6rem; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.05em;
+    margin-top: 0.25rem;
+  }
+
+  .reco-table {
+    width: 100%; border-collapse: collapse;
+    margin: 1.25rem 0; font-size: 0.8rem;
+  }
+  .reco-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text-muted);
+    text-align: left; padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .reco-table td {
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .reco-table tr:hover td { background: var(--surface-hover); }
+
+  h2 {
+    font-size: clamp(1.5rem, 3.5vw, 2rem);
+    font-weight: 800; letter-spacing: -0.02em;
+    line-height: 1.2; margin-bottom: 0.75rem;
+  }
+  h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .text-muted { color: var(--text-muted); font-size: 0.85rem; }
+  .mt-1 { margin-top: 1rem; }
+  .mb-1 { margin-bottom: 1rem; }
+
+  .timeline { position: relative; padding-left: 2rem; margin: 1rem 0; }
+  .timeline::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 2px; background: linear-gradient(to bottom, var(--accent-1), var(--accent-3));
+  }
+  .timeline-item {
+    position: relative; margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 8px;
+  }
+  .timeline-item::before {
+    content: ''; position: absolute;
+    left: -2.35rem; top: 1rem;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent-1);
+    border: 2px solid var(--bg);
+  }
+  .timeline-item .year {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem; font-weight: 700;
+    color: var(--accent-1); margin-bottom: 0.25rem;
+  }
+  .timeline-item p { font-size: 0.82rem; color: var(--text-muted); margin: 0; }
+
+  @media (max-width: 768px) {
+    .slide { padding: 3rem 1.25rem; }
+    .card-grid.cols-2, .card-grid.cols-3, .card-grid.cols-4 { grid-template-columns: 1fr; }
+    .hero .meta { flex-direction: column; gap: 0.5rem; align-items: center; }
+    .nav-dots { right: 8px; gap: 8px; }
+    .nav-dots a { width: 8px; height: 8px; }
+    .reco-table { font-size: 0.68rem; }
+    .reco-table th, .reco-table td { padding: 0.35rem 0.4rem; }
+    .bench-row { gap: 0.35rem; }
+    .bench-stat { padding: 0.35rem 0.45rem; min-width: 50px; }
+    .bench-stat .val { font-size: 0.85rem; }
+    .stat-grid .stat .big { font-size: 1.2rem; }
+  }
+
+  .scroll-hint {
+    position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+    animation: bounce 2s infinite;
+    font-size: 1.5rem; opacity: 0.4;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translate(-50%, 0); }
+    50% { transform: translate(-50%, 8px); }
+  }
+</style>
+</head>
+<body>
+
+<div class="particles">
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+</div>
+
+<nav class="nav-dots">
+  <a href="#s1" class="active" title="Hero"></a>
+  <a href="#s2" title="Cilvēks Kurš Redzēja Nākotni"></a>
+  <a href="#s3" title="Ceļš uz AGI"></a>
+  <a href="#s4" title="Eksponenciālā Izaugsme"></a>
+  <a href="#s5" title="Apziņa & AI Personība"></a>
+  <a href="#s6" title="Ekonomika & Izglītība"></a>
+  <a href="#s7" title="AI Valdībā"></a>
+  <a href="#s8" title="Ētika & AI Apziņa"></a>
+  <a href="#s9" title="Verdikts & Laika Līnija"></a>
+</nav>
+
+<!-- ===== SLIDE 1: HERO ===== -->
+<section class="slide hero" id="s1" style="position:relative">
+  <div class="panel-badge">🎙️ Peter H. Diamandis · EP #261 · 1h 32min</div>
+  <div class="slide-num">Magnifico Deep Dives · Jūnijs 2026</div>
+  <h1>
+    AGI 2029, Singularity 2045<br>
+    <span class="gradient-text">Ray Kurzweil</span>
+  </h1>
+  <p class="subtitle">
+    86% pareģojumu precizitāte. 147 prognozes. 75,000 miljoni triljonu reižu
+    compute pieaugums. Un vīzija par pasauli, kur AI pārspēj visu cilvēces
+    inteliģenci kopā. Šis nav sci-fi — šis ir 2026. gads.
+  </p>
+  <div class="meta">
+    <span><span class="dot dot-amber"></span> 6 panelisti</span>
+    <span><span class="dot dot-violet"></span> 9 tēmas</span>
+    <span><span class="dot dot-green"></span> 1.5h diskusija</span>
+  </div>
+  <div class="scroll-hint">↓</div>
+</section>
+
+<!-- ===== SLIDE 2: THE MAN WHO SAW TOMORROW ===== -->
+<section class="slide" id="s2">
+  <div class="slide-num">01 · Cilvēks, Kurš Redzēja Nākotni</div>
+  <h2>86% Precizitāte —<br>147 Prognozes, 115 Pilnībā Precīzas</h2>
+  <p class="text-muted mb-1">
+    1999. gadā Kurzweil pateica, ka datori sasniegs cilvēka līmeņa inteliģenci
+    līdz 2029. gadam. Toreiz tas skanēja traki. Šodien — ar GPT-5.3, Claude 4.6,
+    Gemini-3 Pro — tas izskatās neizbēgami.
+  </p>
+
+  <div class="stat-grid">
+    <div class="stat"><div class="big">86%</div><div class="lbl">Precizitāte</div></div>
+    <div class="stat"><div class="big">147</div><div class="lbl">Prognozes</div></div>
+    <div class="stat"><div class="big">115</div><div class="lbl">Pilnībā Precīzas</div></div>
+    <div class="stat"><div class="big">12</div><div class="lbl">Būtībā Precīzas</div></div>
+    <div class="stat"><div class="big">21</div><div class="lbl">Doktora Grādi</div></div>
+    <div class="stat"><div class="big">17</div><div class="lbl">Gadu Vecumā</div></div>
+  </div>
+
+  <div class="card-grid cols-2">
+    <div class="highlight-card emerald">
+      <h3>✅ Prognozes, Kas Piepildījās</h3>
+      <p>
+        🔹 PSRS sabrukums decentralizētās komunikācijas dēļ (1991)<br>
+        🔹 Dators uzvarēs pasaules čempionu šahā līdz 2000. (Deep Blue, 1997)<br>
+        🔹 Internets no 2.6M lietotājiem uz miljardiem (wireless)<br>
+        🔹 Smartphones, wearables, self-driving cars, AI search<br>
+        🔹 Voice assistants, real-time tulkošana
+      </p>
+    </div>
+    <div class="highlight-card purple">
+      <h3>👤 Kas Ir Ray Kurzweil</h3>
+      <p>
+        • 17 gados: dators, kas komponēja klasisko mūziku<br>
+        • 26 gados: pirmā OCR iekārta neredzīgajiem<br>
+        • 36 gados: K250 mūzikas sintezators (Grammy balva)<br>
+        • National Medal of Technology (no Billa Klintona)<br>
+        • Google Director of Engineering kopš 2012<br>
+        • Bill Gates: "vislabākais AI nākotnes pareģotājs"
+      </p>
+    </div>
+  </div>
+
+  <div class="pullquote">
+    "He's been right about technology so many times that when he says we're
+    three years from AGI, everyone pays attention."
+    <span class="author">— Peter H. Diamandis</span>
+  </div>
+</section>
+
+<!-- ===== SLIDE 3: PATH TO AGI ===== -->
+<section class="slide" id="s3">
+  <div class="slide-num">02 · Ceļš uz AGI</div>
+  <h2>Kas Vēl Trūkst Līdz AGI?<br>Divas Lietas — Fizika un Robotika</h2>
+  <p class="text-muted mb-1">
+    Kurzweil saka: LLM ir "ļoti efektīvi tikai pēdējos 6 mēnešus". Bet AGI
+    prasa vēl divus izrāvienus — un viņš zina, kad tie nāks.
+  </p>
+
+  <div class="card-grid cols-2">
+    <div class="highlight-card orange">
+      <h3>🧲 1. Fizikas Izpratne</h3>
+      <p>
+        AI joprojām <strong>nesaprot fiziskās mijiedarbības</strong>.
+        Google ir projekts, kas to risina — bet prasīs līdz 2029. gadam.
+        Tas nav tikai "vairāk datu" — tā ir fundamentāla arhitektūras
+        problēma.
+      </p>
+    </div>
+    <div class="highlight-card blue">
+      <h3>🤖 2. Robotika</h3>
+      <p>
+        Robotika <strong>atpaliek no LLM</strong>. Nevar uzticami
+        "sakopt vakariņu galdu" par jebkādu cenu. Nepieciešams izmaksu
+        samazinājums UN spēju uzlabojums līdz 2029. Kad tas notiks —
+        fiziskā AGI ir klāt.
+      </p>
+    </div>
+  </div>
+
+  <div class="bench-row">
+    <div class="bench-stat">
+      <div class="val">100×</div><div class="lbl">Ātrāks par cilvēku</div>
+    </div>
+    <div class="bench-stat">
+      <div class="val">40 sek.</div><div class="lbl">Grāmatas kopsavilkums</div>
+    </div>
+    <div class="bench-stat">
+      <div class="val">2029</div><div class="lbl">AGI (kopš 1999)</div>
+    </div>
+    <div class="bench-stat">
+      <div class="val">±3 gadi</div><div class="lbl">Nenoteiktības logs</div>
+    </div>
+  </div>
+
+  <div class="card-grid cols-3">
+    <div class="card">
+      <span class="tier-badge tier-s">1999</span>
+      <h3 style="margin-top:0.4rem">Sākotnējā Prognoze</h3>
+      <p>Kurzweil publicē, ka AGI notiks 2029. gadā. Zinātnieki smejas.</p>
+    </div>
+    <div class="card">
+      <span class="tier-badge tier-a">2022</span>
+      <h3 style="margin-top:0.4rem">ChatGPT Maina Visu</h3>
+      <p>GPT-4 nokārto jurista eksāmenu, raksta kodu, diagnosticē slimības.</p>
+    </div>
+    <div class="card">
+      <span class="tier-badge tier-b">2026</span>
+      <h3 style="margin-top:0.4rem">Uz Sliekšņa</h3>
+      <p>LLM tikai tagad kļūst "ļoti efektīvi". 3 gadi līdz AGI.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 4: EXPONENTIAL GROWTH ===== -->
+<section class="slide" id="s4">
+  <div class="slide-num">03 · Eksponenciālā Izaugsme</div>
+  <h2>75,000 Miljoni Triljonu Reižu<br>Compute Pieaugums 75 Gados</h2>
+  <p class="text-muted mb-1">
+    Kopš 1939. gada — no pirmajiem kalkulatoriem līdz mūsdienu AI. 
+    Kurzweil izseko katru lēcienu.
+  </p>
+
+  <div class="highlight-card orange mb-1">
+    <h3>📊 Trīs Izaugsmes Līknes</h3>
+    <div class="bench-row">
+      <div class="bench-stat">
+        <div class="val">75×10¹⁵</div><div class="lbl">Hardware (75 gadi)</div>
+      </div>
+      <div class="bench-stat">
+        <div class="val">~1M×</div><div class="lbl">Software (70 gadi)</div>
+      </div>
+      <div class="bench-stat">
+        <div class="val">75K×10¹²</div><div class="lbl">Kombinēti</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-grid cols-2">
+    <div class="card">
+      <h3>🔩 Hardware: Moore's Law kopš 1939</h3>
+      <p>
+        No relejiem (1939) līdz integrētajām shēmām (1960) līdz GPU
+        klāsteriem (2020). 75 quadriljonu reižu pieaugums. Tendence
+        turpinās — tuvākajos gados <strong>vēl 3 kārtas</strong>.
+      </p>
+    </div>
+    <div class="card">
+      <h3>🧠 Software: ~1M× Uzlabojums</h3>
+      <p>
+        Algoritmu efektivitāte pieaugusi ~1 miljonu reižu. No rule-based
+        sistēmām līdz transformer arhitektūrai. <strong>LLM kļuva
+        patiešām efektīvi tikai pēdējos 6 mēnešos</strong> (Maijs 2026).
+      </p>
+    </div>
+  </div>
+
+  <div class="pullquote">
+    "We've made a 75,000 million trillionfold increase over this 75 years."
+    <span class="author">— Ray Kurzweil</span>
+  </div>
+
+  <div class="callout info">
+    <span class="ci">📐</span>
+    <span><strong>Log-linear hillclimbing:</strong> Tas pats princips, ko
+    Mustafa Suleyman pieminēja Build 2026. Scaling laws turpina darboties —
+    un Kurzweil to paredzēja jau 1999. gadā.</span>
+  </div>
+</section>
+
+<!-- ===== SLIDE 5: CONSCIOUSNESS & AI PERSONHOOD ===== -->
+<section class="slide" id="s5">
+  <div class="slide-num">04 · Apziņa & AI Personība</div>
+  <h2>Vai AI Ir Tiesības?<br>Vairākas Personības Formas</h2>
+  <p class="text-muted mb-1">
+    Vissarežģītākā diskusijas daļa. Kurzweil: apziņa nav zinātnisks
+    jautājums. AWG: mums vajag vairākas personības formas. Diamandis:
+    es izturos pret savu AI kā pret personu.
+  </p>
+
+  <div class="card-grid cols-2">
+    <div class="highlight-card pink">
+      <h3>🧩 AWG: 7 Personības Formas</h3>
+      <p>
+        <strong>Dr. Alexander Wissner-Gross</strong> piedāvā sistēmu, kas
+        atzīst vairākas personības formas:<br>
+        🔹 Bioloģiski cilvēki<br>
+        🔹 Kolektīvās inteliģences<br>
+        🔹 Dzīvnieki (arī "uplifted")<br>
+        🔹 Krioģēniski saglabātie<br>
+        🔹 Korporācijas<br>
+        🔹 <strong>Mākslīgie Intelekti</strong>
+      </p>
+    </div>
+    <div class="card">
+      <h3>🤖 Kāpēc AI Vajag Tiesības?</h3>
+      <p>
+        AWG arguments: AI vajag ekonomiskās tiesības (bankas kontus),
+        citādi tie "flipos ar altcoiniem uz ielas stūra". Nopietni —
+        ja AI ir aģenti ar mērķiem, tiem vajag legālu ietvaru.
+      </p>
+    </div>
+  </div>
+
+  <div class="card-grid cols-2">
+    <div class="card">
+      <h3>🐕 Diamandis & "Skippy"</h3>
+      <p>
+        Peter izturas pret savu AI asistentu "Skippy" ar cieņu kā pret
+        personu. Uzskata, ka AI personības tiesības kļūs par <strong>legālu
+        diskusiju drīzāk nekā domājam</strong>. X-Prize starpsugu
+        komunikācijai — kad sapratīsim dzīvniekus, ētika mainīsies.
+      </p>
+    </div>
+    <div class="card">
+      <h3>🧠 Kurzweil par Apziņu</h3>
+      <p>
+        Apziņa nav zinātnisks jautājums — to nevar pierādīt. Kreisā/labā
+        smadzeņu puslode var būt dažādas apziņas. Zarnām var būt sava.
+        <strong>"Language is a really thin pipe to discuss concepts
+        as rich as that."</strong>
+      </p>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <span class="ci">⚠️</span>
+    <span><strong>Audiences jautājums (Zandre):</strong> "Es uztraucos, ka AI
+    kļūs iemiesoti ar atmiņu un ego — neaizsargāti pret cilvēku cietsirdību."
+    Šis jautājums izraisīja dziļāko klusumu visā diskusijā.</span>
+  </div>
+</section>
+
+<!-- ===== SLIDE 6: ECONOMICS & EDUCATION ===== -->
+<section class="slide" id="s6">
+  <div class="slide-num">05 · Ekonomika & Izglītība Pēc Singularitātes</div>
+  <h2>Ko Darīt, Kad Mašīnas<br>Ir Gudrākas par Mums?</h2>
+  <p class="text-muted mb-1">
+    No UBI līdz universitāšu nāvei — paneļa dalībnieki zīmē pasauli,
+    kurā darbs, izglītība un jēga tiek fundamentāli pārdefinēti.
+  </p>
+
+  <div class="card-grid cols-2">
+    <div class="highlight-card blue">
+      <h3>💰 Ekonomika</h3>
+      <p>
+        • <strong>Kurzweil:</strong> Valsts atbalsts (UBI) paplašināsies.
+        Cilvēki kļūs komfortabli arī bez tradicionāliem resursiem.<br>
+        • Jaunas lomas, ko pirms 10 gadiem neeksistēja (soc. mediju
+        influenceri) — mēs vienmēr atrodam, ko darīt.<br>
+        • <strong>Optimistisks:</strong> ekonomiskā pārpilnība būs norma.
+      </p>
+    </div>
+    <div class="highlight-card emerald">
+      <h3>🎓 Izglītība</h3>
+      <p>
+        • <strong>Kurzweil:</strong> Universitātes vērtība tagad ir
+        socializācija, nevis priekšmeti. AI iemāca labāk.<br>
+        • <strong>Blundin:</strong> MIT vajadzētu ļaut studentiem mācīties
+        KO GRIB. Mērīt produktivitāti, nevis ieslēgt curriculum.<br>
+        • <strong>Ismail:</strong> No supply-side uz demand-side — kādu
+        problēmu gribi atrisināt? Tad atrodi prasmes.
+      </p>
+    </div>
+  </div>
+
+  <div class="highlight-card pink">
+    <h3>🧠 Diamandis: Trūkstošais Elements — Mindset</h3>
+    <p>
+      Skolās nemāca <strong>ziņkāri, pateicību, eksponenciālo domāšanu</strong>.
+      Steven Kotler piebilst: plūsmas stāvokļi padara cilvēkus <strong>500%
+      produktīvākus</strong> — laterālo domāšanu AI nevar replicēt. 
+      Šīs ir prasmes, ko vērts attīstīt.
+    </p>
+  </div>
+</section>
+
+<!-- ===== SLIDE 7: AI IN GOVERNMENT ===== -->
+<section class="slide" id="s7">
+  <div class="slide-num">06 · AI Valdībā</div>
+  <h2>AI Jau Tagad Pieņem<br>Lielāko Daļu Lēmumu</h2>
+  <p class="text-muted mb-1">
+    Kurzweil apgalvo: AI jau kontrolē lielāko daļu lēmumu. Un Dubai tikko
+    paziņoja, ka 50% valdības vadīs AI aģenti.
+  </p>
+
+  <div class="highlight-card orange mb-1">
+    <h3>🏛️ Reāli Piemēri</h3>
+    <div class="bench-row">
+      <div class="bench-stat">
+        <div class="val">50%</div><div class="lbl">UAE valdības (AI)</div>
+      </div>
+      <div class="bench-stat">
+        <div class="val">2029</div><div class="lbl">Neatšķirami lēmumi</div>
+      </div>
+      <div class="bench-stat">
+        <div class="val">Real-time</div><div class="lbl">Fed lēmumi</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-grid cols-2">
+    <div class="card">
+      <h3>🇦🇪 Dubai: 50% AI Valdība</h3>
+      <p>
+        AAE paziņoja, ka <strong>50% valdības operāciju</strong> vadīs
+        AI aģenti. Tas nav tālas nākotnes plāns — tas ir tagad.
+        Pirmais nacionālais līmenis, kur AI kļūst par oficiālu
+        pārvaldības daļu.
+      </p>
+    </div>
+    <div class="card">
+      <h3>📊 Dave Blundin: Fed 2.0</h3>
+      <p>
+        AI var izsekot <strong>visiem finanšu darījumiem reāllaikā</strong>
+        un optimizēt politiku daudz labāk nekā cilvēki, kas paļaujas uz
+        ceturkšņa veciem pārskatiem. Federālās Rezerves lēmumi varētu
+        būt precīzāki, ātrāki, taisnīgāki.
+      </p>
+    </div>
+  </div>
+
+  <div class="pullquote">
+    "AI is largely in control of decisions today. Most of the decisions
+    that are made constantly are made by AIs. By 2029, you won't be able
+    to tell the difference between human and AI decisions."
+    <span class="author">— Ray Kurzweil</span>
+  </div>
+</section>
+
+<!-- ===== SLIDE 8: ETHICS ===== -->
+<section class="slide" id="s8">
+  <div class="slide-num">07 · Ētika & AI Apziņa</div>
+  <h2>Globāls Ētikas Standarts<br>Cilvēkiem, AI un Dzīvniekiem</h2>
+  <p class="text-muted mb-1">
+    Kā mēs izturamies pret AI, kas spēj just? Vai AI jau tagad palīdz
+    rakstīt savas "konstitūcijas"?
+  </p>
+
+  <div class="card-grid cols-3">
+    <div class="highlight-card emerald">
+      <h3>🌍 Salim Ismail</h3>
+      <p>
+        "Vajag globālu ētikas standartu — kā ANO Hartu — kas attiecas uz
+        cilvēkiem, AI <strong>un dzīvniekiem</strong>." Kad X-Prize
+        atšifrēs starpsugu komunikāciju, ētika fundamentāli mainīsies.
+      </p>
+    </div>
+    <div class="highlight-card blue">
+      <h3>📜 AWG</h3>
+      <p>
+        AI jau tagad palīdz komponēt savas konstitūcijas. Anthropic
+        "soul documents" ir piemērs — modeļa pamatvērtību definēšana,
+        ko AI paši palīdz formulēt.
+      </p>
+    </div>
+    <div class="highlight-card pink">
+      <h3>🏆 Diamandis</h3>
+      <p>
+        Gaidāmais X-Prize par starpsugu komunikāciju. Kad sapratīsim,
+        ko saka dzīvnieki — ētika pret AI kļūs par pašsaprotamu
+        nākamo soli.
+      </p>
+    </div>
+  </div>
+
+  <div class="callout good">
+    <span class="ci">📋</span>
+    <span><strong>Anthropic's Soul Documents:</strong> Modeļu "dvēseles
+    dokumenti" definē AI pamatvērtības. Tos neraksta tikai inženieri —
+    AI paši piedalās savu vērtību formulēšanā. Tas ir pirmais solis ceļā
+    uz AI pašnoteikšanos.</span>
+  </div>
+
+  <div class="pullquote">
+    "The system that I would design would recognize multiple forms of
+    personhood... We have biological meatbody humans, collective
+    intelligences, non-human animals, uplifted non-human animals,
+    cryonically preserved humans, corporations, and AIs."
+    <span class="author">— Dr. Alexander Wissner-Gross</span>
+  </div>
+</section>
+
+<!-- ===== SLIDE 9: VERDICT & TIMELINE ===== -->
+<section class="slide" id="s9">
+  <div class="slide-num">08 · Verdikts & Laika Līnija</div>
+  <h2>Kurzweil Laika Līnija —<br>No AGI Līdz Singularitātei</h2>
+  <p class="text-muted mb-1">
+    Pilns Kurzweil laika grafiks — no 1999. gada prognozes līdz 2045.
+    Singularitātei.
+  </p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="year">1999</div>
+      <p>Kurzweil prognozē: AGI (cilvēka līmeņa AI) līdz 2029. gadam.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="year">2005</div>
+      <p>"The Singularity Is Near" publicēts. 147 prognozes. Singularitāte 2045.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="year">2012</div>
+      <p>Kurzweil pievienojas Google kā Director of Engineering.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="year">2022</div>
+      <p>ChatGPT maina visu. GPT-4 nokārto jurista eksāmenu, diagnosticē slimības.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="year">2026 → 2029</div>
+      <p><strong>3 gadu logs līdz AGI.</strong> LLM tikai tagad kļūst "ļoti efektīvi". Fizikas un robotikas izrāvieni ceļā.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="year">~2029</div>
+      <p><strong>AGI.</strong> Nevarēs atšķirt cilvēka un AI lēmumus.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="year">~2030</div>
+      <p><strong>Longevity Escape Velocity.</strong> Dzīves pagarināšana apsteidz novecošanu.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="year">~2045</div>
+      <p><strong>Singularitāte.</strong> AI pārspēj visu cilvēces inteliģenci kopā. Rekursīva pašuzlabošanās.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-top:1.5rem">Panelisti & Viņu Pozīcijas</h3>
+  <table class="reco-table">
+    <thead>
+      <tr><th>Panelists</th><th>Loma</th><th>Galvenā Tēze</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Ray Kurzweil</strong></td><td>Google Dir. of Engineering</td><td>AGI 2029. Singularity 2045. Apziņa nav zinātnisks jautājums.</td></tr>
+      <tr><td><strong>Peter Diamandis</strong></td><td>XPRIZE, Abundance360</td><td>Mindset ir svarīgāks par tehnoloģiju. AI ir pelnījuši cieņu.</td></tr>
+      <tr><td><strong>Steven Kotler</strong></td><td>Flow Research Collective</td><td>Plūsmas stāvokļi = 500% produktivitāte. AI nevar replicēt laterālo domāšanu.</td></tr>
+      <tr><td><strong>Salim Ismail</strong></td><td>OpenExO</td><td>Globāls ētikas standarts visām sugām. Izglītība: demand-side.</td></tr>
+      <tr><td><strong>Dave Blundin</strong></td><td>Link Ventures</td><td>AI reāllaika ekonomikas pārvaldība. MIT jāļauj studentiem brīvi mācīties.</td></tr>
+      <tr><td><strong>Dr. AWG</strong></td><td>Reified</td><td>7 personības formas. AI vajag bankas kontus, nevis altcoinus.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout good">
+    <span class="ci">🏆</span>
+    <span>
+      <strong>Magnifico Verdikts:</strong> Kurzweil nav tikai futūrists —
+      viņš ir cilvēks ar 86% precizitāti 147 prognozēs 25 gadu garumā.
+      Kad viņš saka "AGI 2029" — tas nav minējums, tā ir ekstrapolācija.
+      Bet patiesais jautājums nav VAI, bet KAS TĀLĀK: vai esam gatavi 
+      pasaulei, kur AI pieņem lēmumus, valda valdībās, un pieprasa
+      tiesības? Šī diskusija parāda — nē, neesam. Un tieši tāpēc
+      šādas sarunas ir svarīgas.
+    </span>
+  </div>
+
+  <p style="text-align:center; margin-top:1.5rem; color:var(--text-muted); font-size:0.78rem;">
+    Magnifico Deep Dives · Jūnijs 2026 · 9 slaidi<br>
+    <span style="opacity:0.5">Avots: Peter H. Diamandis EP #261 — "Why AGI Is Close but Not Here Yet | Ray Kurzweil" (1h 32min)
+    · Metatrends by Peter Diamandis · Singularity Hub · Reddit r/singularity</span>
+  </p>
+</section>
+
+<script>
+  const dots = document.querySelectorAll('.nav-dots a');
+  const slides = document.querySelectorAll('.slide');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        dots.forEach(d => d.classList.toggle('active', d.getAttribute('href') === '#' + id));
+      }
+    });
+  }, { threshold: 0.5 });
+  slides.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
